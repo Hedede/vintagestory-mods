@@ -26,7 +26,7 @@ namespace NB.Cartographer
         {
             patches = new WaypointMapLayerPatches(api);
 
-            api.ModLoader.GetModSystem<WorldMapManager>().RegisterMapLayer<SharableWaypointMapLayer>("waypoints");
+            api.ModLoader.GetModSystem<WorldMapManager>().RegisterMapLayer<SharableWaypointMapLayer>("waypoints", 1.0);
 
         }
 

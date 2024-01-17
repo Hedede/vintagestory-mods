@@ -220,6 +220,7 @@ namespace NB.Cartographer
 
         public void ResendWaypoints(IServerPlayer toPlayer)
         {
+            // TODO: Verify that this is still currect upon future updates
             Dictionary<int, PlayerGroupMembership> memberOfGroups = toPlayer.ServerData.PlayerGroupMemberships;
             List<Waypoint> hisMarkers = new List<Waypoint>();
 
