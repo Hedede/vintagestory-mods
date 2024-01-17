@@ -34,7 +34,6 @@ namespace NB.Cartographer
 
                 sapi.Event.GameWorldSave += OnSaveGameGettingSaved;
 
-                //sapi.ChatCommands.Get("waypoint")
                 sapi.ChatCommands.Create("wp")
                     .WithDescription("Put a waypoint at this location which will be visible for you on the map")
                     .RequiresPrivilege(Privilege.chat)
@@ -46,6 +45,22 @@ namespace NB.Cartographer
                         .HandleWith(OnCmdWayPointAddShared)
                     .EndSubCommand()
 
+                    .BeginSubCommand("share")
+                        .WithDescription("Share an existing waypoint to other players")
+                        .RequiresPlayer()
+                        .WithArgs(parsers.Int("waypoint_id"))
+                        .HandleWith(OnCmdWayPointShare)
+                    .EndSubCommand()
+
+                    .BeginSubCommand("unshare")
+                        .WithDescription("Unshare the specified waypoint")
+                        .RequiresPlayer()
+                        .WithArgs(parsers.Int("waypoint_id"))
+                        .HandleWith(OnCmdWayPointUnshare)
+                    .EndSubCommand();
+                ;
+
+                sapi.ChatCommands.Get("waypoint")
                     .BeginSubCommand("share")
                         .WithDescription("Share an existing waypoint to other players")
                         .RequiresPlayer()
