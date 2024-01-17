@@ -170,6 +170,22 @@ namespace NB.Cartographer
             return TextCommandResult.Success(Lang.Get("Ok, unshared waypoint {0}.", id));
         }
 
+        public void OnRemoveWaypoint(IServerPlayer player, int id)
+        {
+            Waypoint[] ownwpaypoints = Waypoints.Where((p) => p.OwningPlayerUid == player.PlayerUID).ToArray();
+
+            if (id < 0 || id >= ownwpaypoints.Length)
+                return;
+
+            int sharedIndex = SharedWaypoints.IndexOf(ownwpaypoints[id]);
+
+            if (sharedIndex != -1)
+            {
+                SharedWaypoints.RemoveAt(sharedIndex);
+                ResendWaypointsToOtherPlayers(player);
+            }
+        }
+
         public void OnSaveGameGettingSaved()
         {
             var sharedIndices = new List<int>();
