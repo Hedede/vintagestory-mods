@@ -70,7 +70,8 @@ namespace NB.Cartographer
                 colorIndex = colors.Length - 1;
             }
 
-            var ownerName = capi.World.PlayerByUid(waypoint.OwningPlayerUid).PlayerName;
+            var owner = capi.World.PlayerByUid(waypoint.OwningPlayerUid);
+            var ownerName = (owner?.PlayerName) ?? waypoint.PlayerName;
 
             SingleComposer = capi.Gui
                 .CreateCompo("worldmap-modwp", dialogBounds)

@@ -214,6 +214,7 @@ namespace NB.Cartographer
 
             sapi.World.Logger.Event("Saved " + Waypoints.Count + " shared waypoints");
         }
+
         public override void OnLoaded()
         {
             base.OnLoaded();
@@ -224,7 +225,19 @@ namespace NB.Cartographer
             if (data != null)
             {
                 Waypoints = SerializerUtil.Deserialize<Dictionary<string, List<SharedWaypoint>>>(data);
-                sapi.World.Logger.Notification("Successfully loaded " + Waypoints.Count + " shared waypoints");
+
+                int totalCount = 0;
+                foreach (var entry in Waypoints)
+                {
+                    if (entry.Value == null)
+                    {
+                        Waypoints[entry.Key] = new List<SharedWaypoint>();
+                        api.World.Logger.Warning("Waypoint list for {0} is null!", entry.Key);
+                    }
+                    totalCount += entry.Value.Count;
+                }
+
+                sapi.World.Logger.Event("Successfully loaded {0} shared waypoints from {1} players", totalCount, Waypoints.Count );
             }
             else
             {
@@ -242,6 +255,15 @@ namespace NB.Cartographer
 
                         }
                         ShareWaypoint(WaypointLayer.Waypoints[index]);
+                    }
+
+                    // Iterate backwards to avoid shifting indices
+                    sharedIndices.Sort();
+                    sharedIndices.Reverse();
+
+                    foreach (int index in sharedIndices)
+                    {
+                        WaypointLayer.Waypoints.RemoveAt(index);
                     }
 
                     sapi.World.Logger.Notification("Successfully converted " + sharedIndices.Count + " shared waypoints from an older version");
@@ -285,7 +307,8 @@ namespace NB.Cartographer
 
         public string AddWaypoint(SharedWaypoint wp)
         {
-            var PlayerName = sapi.World.PlayerByUid(wp.OwningPlayerUid).PlayerName.ToLower();
+            var PlayerData = sapi.PlayerData.GetPlayerDataByUid(wp.OwningPlayerUid);
+            var PlayerName = (PlayerData?.LastKnownPlayername.ToLower()) ?? "unknown";
 
             List<SharedWaypoint> wpList;
             if (!Waypoints.TryGetValue(PlayerName, out wpList))
