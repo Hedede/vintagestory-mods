@@ -234,7 +234,10 @@ namespace NB.Cartographer
                         Waypoints[entry.Key] = new List<SharedWaypoint>();
                         api.World.Logger.Warning("Waypoint list for {0} is null!", entry.Key);
                     }
-                    totalCount += entry.Value.Count;
+                    else
+                    {
+                        totalCount += entry.Value.Count;
+                    }
                 }
 
                 sapi.World.Logger.Event("Successfully loaded {0} shared waypoints from {1} players", totalCount, Waypoints.Count );
