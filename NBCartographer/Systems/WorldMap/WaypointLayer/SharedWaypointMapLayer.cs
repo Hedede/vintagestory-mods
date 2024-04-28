@@ -149,7 +149,10 @@ namespace NB.Cartographer
                     .HandleWith(OnCmdWayPointUnshare)
                 .EndSubCommand();
 
-            sapi.ChatCommands.Create("wp")
+            if (sapi.ChatCommands.Get("wp") == null)
+                sapi.ChatCommands.Create("wp");
+
+            sapi.ChatCommands.Get("wp")
                 .WithDescription("Put a waypoint at this location which will be visible for you on the map")
                 .RequiresPrivilege(Privilege.chat)
 
@@ -158,6 +161,11 @@ namespace NB.Cartographer
                     .RequiresPlayer()
                     .WithArgs(parsers.Word("title"), parsers.OptionalWord("color"), parsers.OptionalWord("icon"))
                     .HandleWith(OnCmdAddSharedWayPoint)
+                .EndSubCommand()
+
+                .BeginSubCommand("list")
+                    .WithDescription("List all shared waypoints")
+                    .HandleWith(OnCmdWayPointList)
                 .EndSubCommand()
 
                 .BeginSubCommand("modify")
