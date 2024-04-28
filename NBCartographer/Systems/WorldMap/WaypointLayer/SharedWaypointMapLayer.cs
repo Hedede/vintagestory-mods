@@ -123,6 +123,7 @@ namespace NB.Cartographer
                     .EndSubCommand()
                     .BeginSubCommand("list")
                         .WithDescription("List all shared waypoints")
+                        .WithArgs(parsers.OptionalWord("player"))
                         .HandleWith(OnCmdWayPointList)
                     .EndSubCommand()
                     .BeginSubCommand("modify")
@@ -165,6 +166,7 @@ namespace NB.Cartographer
 
                 .BeginSubCommand("list")
                     .WithDescription("List all shared waypoints")
+                    .WithArgs(parsers.OptionalWord("player"))
                     .HandleWith(OnCmdWayPointList)
                 .EndSubCommand()
 
@@ -536,9 +538,16 @@ namespace NB.Cartographer
         {
             if (IsMapDisallowed(out var textCommandResult)) return textCommandResult;
 
+            var player = args.Parsers[0].GetValue() as string;
+            if (player != null)
+                player = player.ToLower();
+
             var list = new StringBuilder();
             foreach (var entry in Waypoints)
             {
+                if (player != null && entry.Key != player)
+                    continue;
+
                 int i = 0;
                 foreach (var wp in entry.Value)
                 {
