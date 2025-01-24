@@ -59,13 +59,13 @@ namespace NB.Cartographer
     public class SharedWaypointMapLayer : MarkerMapLayer
     {
         // Server side
-        ICoreServerAPI sapi;
-        Dictionary<string, List<SharedWaypoint>> Waypoints = new Dictionary<string, List<SharedWaypoint>>();
+        public ICoreServerAPI sapi;
+        public Dictionary<string, List<SharedWaypoint>> Waypoints = new Dictionary<string, List<SharedWaypoint>>();
 
         // Client side
         public MeshRef quadModel;
-        List<MapComponent> wayPointComponents = new List<MapComponent>();
-        List<SharedWaypoint> clientWaypoints = new List<SharedWaypoint>();
+        public List<MapComponent> wayPointComponents = new List<MapComponent>();
+        public List<SharedWaypoint> clientWaypoints = new List<SharedWaypoint>();
 
         // Both sides
         public WaypointMapLayer WaypointLayer;

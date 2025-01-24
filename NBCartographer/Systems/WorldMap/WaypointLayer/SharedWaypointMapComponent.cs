@@ -11,16 +11,16 @@ namespace NB.Cartographer
 {
     public class SharedWaypointMapComponent : MapComponent
     {
-        Vec2f viewPos = new Vec2f();
-        Vec4f color = new Vec4f();
-        SharedWaypoint waypoint;
-        bool pinned;
+        public Vec2f viewPos = new Vec2f();
+        public Vec4f color = new Vec4f();
+        public SharedWaypoint waypoint;
+        public bool pinned;
 
-        Matrixf mvMat = new Matrixf();
+        public Matrixf mvMat = new Matrixf();
 
-        SharedWaypointMapLayer wpLayer;
+        public SharedWaypointMapLayer wpLayer;
 
-        bool mouseOver;
+        public bool mouseOver;
 
         public static float IconScale = 0.85f;
 
