@@ -26,7 +26,7 @@ namespace CakeBuild
 
     public class BuildContext : FrostingContext
     {
-        public const string ProjectName = "NBCartographer";
+        public const string ProjectName = "VSCartographer";
         public string BuildConfiguration { get; }
         public string Version { get; }
         public string Name { get; }

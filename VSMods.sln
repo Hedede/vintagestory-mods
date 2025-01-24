@@ -3,9 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.8.34316.72
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CakeBuild", "CakeBuild\CakeBuild.csproj", "{CCAAEA8A-54E0-4088-9CA0-CBF090A756AA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CakeBuild", "CakeBuild\CakeBuild.csproj", "{CCAAEA8A-54E0-4088-9CA0-CBF090A756AA}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NBCartographer", "NBCartographer\NBCartographer.csproj", "{416D8EAD-6E43-46C5-8209-F834AE8786B9}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "VSCartographer", "VSCartographer\VSCartographer.csproj", "{416D8EAD-6E43-46C5-8209-F834AE8786B9}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
