@@ -1,0 +1,15 @@
+{
+  "_comentarios": "Cartographer v2.0.10 || Creado y adaptado por C4BR3R4 || Última Modificación: 20241105 || Publicación: http://c4br3r4.es/index.php?topic=1268.0 ",
+  "_comentario-2": "Cadenas creadas desde la búsqueda https://github.com/search?q=repo%3AHedede%2Fvintagestory-mods+Lang.Get&type=code ",
+  "game:maplayer-sharedwaypoints": "Marcas Públicas",
+
+  "game:Added By": "Añadida por",
+  "game:Shared": "Pública",
+  "game:Waypoint {0}.{1}": "Creador: <strong>{0}</strong>\nID: {1}\n",
+
+  "_comentario-3": "Las siguientes cadenas solo funcionan del lado del servidor",
+  "game:Ok, waypoint {0} is now shared as {1}.": "La Marca {0} se ha publicado como <strong>{1}</strong>.",
+  "game:Ok, unshared waypoint {0}. Now its number is {1}.": "La Marca <strong>{0}</strong> ya no es pública. Ahora tiene la ID <strong>{1}</strong>.",
+  "game:Ok, deleted waypoint {0}.": "Se ha eliminado la Marca <strong>{0}</strong>.",
+  "game:Ok, waypoint {0} modified": "Se ha modificado la Marca <strong>{0}</strong>."
+}
