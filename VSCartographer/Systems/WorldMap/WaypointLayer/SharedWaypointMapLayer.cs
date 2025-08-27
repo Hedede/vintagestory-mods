@@ -143,11 +143,21 @@ namespace NB.Cartographer
                     .WithArgs(parsers.OptionalInt("waypoint_id"))
                     .HandleWith(OnCmdWayPointShare)
                 .EndSubCommand()
+                .BeginSubCommand("shareall")
+                    .WithDescription("Share all existing waypoints to other players")
+                    .RequiresPlayer()
+                    .HandleWith(OnCmdWayPointShareAll)
+                .EndSubCommand()
                 .BeginSubCommand("unshare")
                     .WithDescription("Unshare the specified waypoint")
                     .RequiresPlayer()
                     .WithArgs(parsers.Word("waypoint_id"))
                     .HandleWith(OnCmdWayPointUnshare)
+                .EndSubCommand()
+                .BeginSubCommand("unshareall")
+                    .WithDescription("Unshare all currently shared waypoints")
+                    .RequiresPlayer()
+                    .HandleWith(OnCmdWayPointUnshareAll)
                 .EndSubCommand();
 
             if (sapi.ChatCommands.Get("wp") == null)
@@ -190,13 +200,24 @@ namespace NB.Cartographer
                     .WithArgs(parsers.OptionalInt("waypoint_id"))
                     .HandleWith(OnCmdWayPointShare)
                 .EndSubCommand()
+                .BeginSubCommand("shareall")
+                    .WithDescription("Share all existing waypoints to other players")
+                    .RequiresPlayer()
+                    .HandleWith(OnCmdWayPointShareAll)
+                .EndSubCommand()
 
                 .BeginSubCommand("unshare")
                     .WithDescription("Unshare the specified waypoint")
                     .RequiresPlayer()
                     .WithArgs(parsers.Word("waypoint_id"))
                     .HandleWith(OnCmdWayPointUnshare)
+                .EndSubCommand()
+                .BeginSubCommand("unshareall")
+                    .WithDescription("Unshare all currently shared waypoints")
+                    .RequiresPlayer()
+                    .HandleWith(OnCmdWayPointUnshareAll)
                 .EndSubCommand();
+
             ;
 
             sapi.Event.GameWorldSave += OnSaveGameGettingSaved;
@@ -396,6 +417,78 @@ namespace NB.Cartographer
 
             return TextCommandResult.Success(Lang.Get("Ok, unshared waypoint {0}. Now its number is {1}.", id, wpid));
         }
+
+        private TextCommandResult OnCmdWayPointUnshareAll(TextCommandCallingArgs args)
+        {
+            if (IsMapDisallowed(out var textCommandResult)) return textCommandResult;
+            var player = args.Caller.Player as IServerPlayer;
+
+            if (Waypoints.Count == 0)
+            {
+                return TextCommandResult.Success(Lang.Get("There are no shared waypoints"));
+            }
+
+            var playerName = player.PlayerName.ToLower();
+            var wpList = Waypoints.Get(playerName);
+
+            if (wpList == null || wpList.Count == 0)
+            {
+                return TextCommandResult.Success(Lang.Get("You have no shared waypoints to unshare"));
+            }
+
+            var unsharedIds = new List<int>();
+            var waypointsToUnshare = wpList.ToArray();
+
+            foreach (var waypoint in waypointsToUnshare)
+            {
+                var wpid = UnshareWaypoint(waypoint);
+                unsharedIds.Add(wpid);
+            }
+
+            wpList.Clear();
+
+            ResendWaypoints();
+            WaypointLayer_Resend(player);
+
+            return TextCommandResult.Success(Lang.Get("Ok, unshared {0} waypoints. New waypoint IDs: {1}",
+                waypointsToUnshare.Length,
+                string.Join(", ", unsharedIds)));
+        }
+
+        private TextCommandResult OnCmdWayPointShareAll(TextCommandCallingArgs args)
+        {
+            if (IsMapDisallowed(out var textCommandResult)) return textCommandResult;
+
+            var player = args.Caller.Player as IServerPlayer;
+
+            Waypoint[] ownwaypoints = WaypointLayer.Waypoints.Where((p) => p.OwningPlayerUid == player.PlayerUID).ToArray();
+
+            if (ownwaypoints.Length == 0)
+            {
+                return TextCommandResult.Success(Lang.Get("You have no waypoints to share"));
+            }
+
+            var sharedIds = new List<string>();
+
+            foreach (var waypoint in ownwaypoints)
+            {
+                var sid = ShareWaypoint(waypoint);
+                sharedIds.Add(sid);
+            }
+
+            foreach (var waypoint in ownwaypoints)
+            {
+                WaypointLayer.Waypoints.Remove(waypoint);
+            }
+
+            ResendWaypoints();
+            WaypointLayer_Resend(player);
+
+            return TextCommandResult.Success(Lang.Get("Ok, shared {0} waypoints with IDs: {1}",
+                sharedIds.Count,
+                string.Join(", ", sharedIds)));
+        }
+
 
         private TextCommandResult OnCmdWayPointSharedModify(TextCommandCallingArgs args)
         {
