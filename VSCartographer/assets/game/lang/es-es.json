@@ -11,5 +11,10 @@
   "game:Ok, waypoint {0} is now shared as {1}.": "La Marca {0} se ha publicado como <strong>{1}</strong>.",
   "game:Ok, unshared waypoint {0}. Now its number is {1}.": "La Marca <strong>{0}</strong> ya no es pública. Ahora tiene la ID <strong>{1}</strong>.",
   "game:Ok, deleted waypoint {0}.": "Se ha eliminado la Marca <strong>{0}</strong>.",
-  "game:Ok, waypoint {0} modified": "Se ha modificado la Marca <strong>{0}</strong>."
+  "game:Ok, waypoint {0} modified": "Se ha modificado la Marca <strong>{0}</strong>.",
+
+  "_comentario-4": "Traducido automáticamente, requiere revisión humana",
+  "game:Ok, shared {0} waypoints with IDs: {1}": "Se han publicado {0} Marcas con IDs: <strong>{1}</strong>.",
+  "game:Ok, unshared {0} waypoints. New waypoint IDs: {1}": "Se han despublicado {0} Marcas. Nuevas IDs: <strong>{1}</strong>.",
+  "game:You have no shared waypoints to unshare": "No tienes Marcas públicas para despublicar."
 }
