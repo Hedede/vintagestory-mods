@@ -6,8 +6,8 @@
         "Hedede"
     ],
     "description": "Allows to share waypoints with other players",
-    "version": "2.2.1",
+    "version": "2.2.2",
     "dependencies": {
-        "game": "1.21.0"
+        "game": "1.22.0-pre.3"
     }
 }
