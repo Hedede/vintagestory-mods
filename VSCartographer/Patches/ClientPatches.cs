@@ -20,6 +20,8 @@ namespace NB.Cartographer
 {
     public class ClientPatches
     {
+        protected const string sharedSwitchId = "sharedSwitch";
+
         Harmony Harmony;
         public ClientPatches(ICoreAPI api)
         {
@@ -28,7 +30,7 @@ namespace NB.Cartographer
 
             var PatcherType = typeof(ClientPatches);
             
-            Harmony.Patch(typeof(GuiDialogAddWayPoint).GetMethod("onSave", BindingFlags.Instance | BindingFlags.NonPublic),
+            Harmony.Patch(typeof(GuiDialogAddWayPoint).GetMethod("OnSave", BindingFlags.Instance | BindingFlags.NonPublic),
                 postfix: PatcherType.GetMethod("Post_GuiDialogAddWayPoint_onSave"));
             Harmony.Patch(typeof(GuiDialogAddWayPoint).GetMethod("ComposeDialog", BindingFlags.Instance | BindingFlags.NonPublic),
                 transpiler: PatcherType.GetMethod("ComposeDialog_Transpiler"));
@@ -45,26 +47,43 @@ namespace NB.Cartographer
             Harmony.UnpatchAll("NB.Cartographer");
         }
         static void onSharedToggled(bool on) { }
+        public static GuiComposer EditShareComponent(GuiComposer composer, ref ElementBounds leftColumn, ref ElementBounds rightColumn)
+        {
+            return composer
+                .AddStaticText(Lang.Get("Shared"), CairoFont.WhiteSmallText(), leftColumn = leftColumn.BelowCopy(0, 9))
+                .AddSwitch(onSharedToggled, rightColumn = rightColumn.BelowCopy(0, 5).WithFixedWidth(200), sharedSwitchId);
+        }
         public static GuiComposer AddShareComponent(GuiComposer composer, ref ElementBounds leftColumn, ref ElementBounds rightColumn)
         {
             return composer
                 .AddStaticText(Lang.Get("Shared"), CairoFont.WhiteSmallText(), leftColumn = leftColumn.BelowCopy(0, 9))
-                .AddSwitch(onSharedToggled, rightColumn = rightColumn.BelowCopy(0, 5).WithFixedWidth(200), "sharedSwitch");
+                .AddSwitch(onSharedToggled, rightColumn = rightColumn.BelowCopy(0, 40).WithFixedWidth(200), sharedSwitchId);
         }
 
         public static IEnumerable<CodeInstruction> ComposeDialog_Transpiler(IEnumerable<CodeInstruction> instructions)
         {
             var found = false;
+            string method = "AddShareComponent";
 
             foreach (var instruction in instructions)
             {
+                if (instruction.opcode == OpCodes.Ldstr && (string)instruction.operand == "Delete")
+                {
+                    method = "EditShareComponent";
+                    break;
+                }
+            }
+
+            foreach (var instruction in instructions)
+            {
+
                 if (instruction.opcode == OpCodes.Ldstr && (string)instruction.operand == "waypoint-color")
                 {
                     //yield return new CodeInstruction(OpCodes.Call, typeof(GuiDialog).GetMethod("get_SingleComposer", BindingFlags.Instance | BindingFlags.Public));
 
                     yield return new CodeInstruction(OpCodes.Ldloca_S, 0);
                     yield return new CodeInstruction(OpCodes.Ldloca_S, 1);
-                    yield return new CodeInstruction(OpCodes.Call, typeof(ClientPatches).GetMethod("AddShareComponent", BindingFlags.Static | BindingFlags.Public));
+                    yield return new CodeInstruction(OpCodes.Call, typeof(ClientPatches).GetMethod(method, BindingFlags.Static | BindingFlags.Public));
 
                     found = true;
                 }
@@ -80,7 +99,7 @@ namespace NB.Cartographer
 
         public static void Post_GuiDialogAddWayPoint_onSave(GuiDialogAddWayPoint __instance)
         {
-            bool shared = __instance.SingleComposer.GetSwitch("sharedSwitch").On;
+            bool shared = __instance.SingleComposer.GetSwitch(sharedSwitchId).On;
             if (shared)
             {
                 var capi = typeof(GuiDialog)
@@ -92,7 +111,7 @@ namespace NB.Cartographer
 
         public static void Post_GuiDialogEditWayPoint_onSave(GuiDialogEditWayPoint __instance)
         {
-            bool shared = __instance.SingleComposer.GetSwitch("sharedSwitch").On;
+            bool shared = __instance.SingleComposer.GetSwitch(sharedSwitchId).On;
             if (shared)
             {
                 var capi = typeof(GuiDialog)
